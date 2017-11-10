@@ -1,47 +1,27 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
+import * as moment from 'moment'
 
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    cinsiyet: false,
     loading: false,
-    error: null,
-    user: null,
-    items: [],
-    erkeks: [],
-    dogans: [],
-    kesiks: []
+    fire: []
   },
   mutations: {
-    mYukle (state, payload) {
-      state.items = payload
-    },
-    mYukleD (state, payload) {
-      state.dogans = payload
-    },
-    mYukleE (state, payload) {
-      state.erkeks = payload
-    },
-    mYukleK (state, payload) {
-      state.kesiks = payload
-    },
     mYeniKayitEkle (state, payload) {
-      state.items.push(payload)
+      state.fire.push(payload)
     },
     mSetLoading (state, payload) {
       state.loading = payload
     },
-    mSetCinsiyet (state, payload) {
-      state.cinsiyet = payload
-    },
     mSetUser (state, payload) {
       state.user = payload
     },
-    mSetError (state, payload) {
-      state.error = payload
+    mYukleF (state, payload) {
+      state.fire = payload
     }
   },
   actions: {
@@ -75,29 +55,63 @@ export const store = new Vuex.Store({
       firebase.auth().signOut()
       commit('mSetUser', null)
     },
-    // Kesilenler yukleniyor
-    YukleK ({commit}) {
+    // UpDown yukleniyor
+    YukleF ({commit}) {
       commit('mSetLoading', true)
-      firebase.database().ref('Koyun/Kesilenler').once('value')
+      firebase.database().ref('FireUp').on('value', function (snapshot) {
+        const durum = []
+        const obj = snapshot.val()
+        const ddate = moment().date()
+        if (Number(obj.date) === ddate) {
+          durum.push({
+            date: obj.date,
+            updown: obj.updown
+          })
+        } else {
+          durum.push({
+            date: obj.date,
+            updown: 0
+          })
+        }
+        commit('mYukleF', durum)
+        commit('mSetLoading', false)
+      })
+/*       .catch(
+        (error) => {
+          console.log(error)
+          commit('mSetLoading', true)
+        }
+      ) */
+    },
+ /*       commit('mYukleF', snapshot.val())
+      })
+    },
+/*         commit('mSetLoading', false)
+      })
+      .catch(
+        (error) => {
+          console.log(error)
+          commit('mSetLoading', true)
+        } */
+/*       commit('mSetLoading', true)
+      firebase.database().ref('FireUp').once('value')
         .then((data) => {
-          const koyun = []
+          const durum = []
           const obj = data.val()
-          for (let key in obj) {
-            koyun.push({
-              id: key,
-              HayvanAdi: obj[key].HayvanAdi,
-              SirtNo: obj[key].SirtNo,
-              RecNo: key,
-              KulakNumarasi: obj[key].KulakNumarasi,
-              Cinsiyet: obj[key].Cinsiyet,
-              DogumTarihi: obj[key].DogumTarihi,
-              AciklamaTarihi: obj[key].AciklamaTarihi,
-              AnneRecNo: obj[key].AnneRecNo
+          const ddate = moment().date()
+          if (Number(obj.date) === ddate) {
+            durum.push({
+              date: obj.date,
+              updown: obj.updown
+            })
+          } else {
+            durum.push({
+              date: obj.date,
+              updown: 0
             })
           }
-          commit('mYukleK', koyun)
+          commit('mYukleF', durum)
           commit('mSetLoading', false)
-          commit('mSetCinsiyet', false)
         })
         .catch(
           (error) => {
@@ -105,115 +119,21 @@ export const store = new Vuex.Store({
             commit('mSetLoading', true)
           }
         )
-    },
-    // yeni doganlar yukleniyor ---
-    YukleD ({commit}) {
-      commit('mSetLoading', true)
-      firebase.database().ref('Koyun/Dogumlar').once('value')
-        .then((data) => {
-          const ana = []
-          // const doganobj = {}
-          const obj = data.val()
-          const donem = obj['SonDonem']
-          for (let key in obj[donem]) {
-            for (let akey in obj[donem][key]) {
-              for (let ykey in obj[donem][key][akey]) {
-                ana.push({
-                  AnaAdi: akey,
-                  RecNo: ykey,
-                  Cinsiyet: obj[donem][key][akey][ykey].Cinsiyet,
-                  SirtNo: obj[donem][key][akey][ykey].SirtNo,
-                  Tarih: obj[donem][key][akey][ykey].Tarih,
-                  isim: obj[donem][key][akey][ykey].isim
-                })
-              }
-            }
-          }
-          commit('mYukleD', ana)
-          commit('mSetLoading', false)
-          commit('mSetCinsiyet', false)
-        })
-        .catch(
-          (error) => {
-            console.log(error)
-            commit('mSetLoading', true)
-          }
-        )
-    },
-    // dişiler yukleniyor
-    Yukle ({commit}) {
-      commit('mSetLoading', true)
-      firebase.database().ref('Koyun/Canlilar/Disi').once('value')
-        .then((data) => {
-          const koyun = []
-          const obj = data.val()
-          for (let key in obj) {
-            koyun.push({
-              id: key,
-              HayvanAdi: obj[key].HayvanAdi,
-              SirtNo: obj[key].SirtNo,
-              RecNo: obj[key].RecNo,
-              KulakNumarasi: obj[key].KulakNumarasi,
-              Cinsiyet: obj[key].Cinsiyet,
-              DogumTarihi: obj[key].DogumTarihi,
-              AnneRecNo: obj[key].AnneRecNo
-            })
-          }
-          commit('mYukle', koyun)
-          commit('mSetLoading', false)
-          commit('mSetCinsiyet', false)
-        })
-        .catch(
-          (error) => {
-            console.log(error)
-            commit('mSetLoading', true)
-          }
-        )
-    },
-    // erkekler yukleniyor
-    YukleE ({commit}) {
-      commit('mSetLoading', true)
-      firebase.database().ref('Koyun/Canlilar/Erkek').once('value')
-        .then((data) => {
-          const koyun = []
-          const obj = data.val()
-          for (let key in obj) {
-            koyun.push({
-              id: key,
-              HayvanAdi: obj[key].HayvanAdi,
-              SirtNo: key,
-              RecNo: obj[key].RecNo,
-              KulakNumarasi: obj[key].KulakNumarasi,
-              Cinsiyet: obj[key].Cinsiyet,
-              DamizlikMi: obj[key].DamizlikMi,
-              DogumTarihi: obj[key].DogumTarihi,
-              AnneRecNo: obj[key].AnneRecNo
-            })
-          }
-          commit('mYukleE', koyun)
-          commit('mSetLoading', false)
-          commit('mSetCinsiyet', true)
-        })
-        .catch(
-          (error) => {
-            console.log(error)
-            commit('mSetLoading', true)
-          }
-        )
-    },
+ */
+
     YeniKayitEkle ({commit}, payload) {
-      const koyun = {
-        Cinsiyet: payload.Cinsiyet,
-        SirtNo: payload.SirtNo
+      const durum = {
+        date: payload.date,
+        updown: payload.updown
       }
       // adreslere dikkat
-      firebase.database().ref('Canlilar/Disi').update(koyun)
+      firebase.database().ref('updown').update(durum)
       // firebase.database().ref('Koyun/Canlilar/Disi').push(koyun)  koyun için
       // firebase.database().ref('vue').push(koyun) deneme için
         .then((data) => {
           const key = data.key
           commit('mYeniKayitEkle', {
-            ...koyun,
+            ...durum,
             id: key
           })
         })
@@ -226,33 +146,12 @@ export const store = new Vuex.Store({
     }
   },
   getters: {
-    gCinsiyet (state) {
-      return state.cinsiyet
-    },
     gLoading (state) {
       return state.loading
     },
-    gYukluKoyunlar (state) {
-      return state.items
-    },
-    gYukluKoyun (state) {
-      return (itemId) => {
-        return state.items.find((item) => {
-          return item.id === itemId
-        })
-      }
-    },
-    gUser (state) {
-      return state.user
-    },
-    gYeniDoganlar (state) {
-      return state.dogans
-    },
-    gYukluErkekler (state) {
-      return state.erkeks
-    },
-    gYukluKesilenler (state) {
-      return state.kesiks
+    gYukluFire (state) {
+      return state.fire
     }
+
   }
 })

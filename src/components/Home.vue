@@ -4,25 +4,27 @@
       <v-layout>
           <v-flex xs12 class="text-xs-center">
             <v-progress-circular
-              indeterminate
-              class="primary--text"
-              :width="4"
-              :size="90"
-              v-if="loading">Kayıtlar yükleniyor</v-progress-circular>
+            indeterminate
+            class="primary--text"
+            :width="4"
+            :size="90"
+            v-if="loading">Kayıtlar yükleniyor</v-progress-circular>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-          <v-flex xs12 sm6 offset-sm3>
+          <v-flex  sm6 offset-sm3>
+            <v-card v-if="durumal==0">
+              <p>
+                <h5 align="center">Henüz belli değil</h5>
+              </p>
+            </v-card>
             <v-card>
-              <v-card-media src="/koyun/static/koyun33.png" height="400px">
+              <v-card-media v-if="durumal==0" src="/cem/static/belirsiz_.jpg" height=1000px>
               </v-card-media>
-              <v-card-actions v-if="!loading">
-                <v-btn v-on:click= "" router to="/disiler" class="error" > Dişiler:  {{ this.$store.getters.gYukluKoyunlar.length }}</v-btn>
-                <v-btn v-on:click= "" router to="/erkekler" class="info"> Erkekler:  {{ this.$store.getters.gYukluErkekler.length }}</v-btn>
-                <v-btn v-on:click= "" router to="/doganlar" class="warning">(Yeni Doğanlar: {{ this.$store.getters.gYeniDoganlar.length }})</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn v-on:click= "" router to="/kesilenler" class="disabled"> Kesilenler:  {{ this.$store.getters.gYukluKesilenler.length }}</v-btn>
-              </v-card-actions>
+              <v-card-media v-if="durumal==1" src="/cem/static/up.png" height=700px>
+              </v-card-media>
+              <v-card-media v-if="durumal==2" src="/cem/static/down.jpeg" height=700px>
+              </v-card-media>
             </v-card>
           </v-flex>
         </v-layout>    
@@ -34,8 +36,10 @@
         loading () {
           return this.$store.getters.gLoading
         },
-        dboy () {
-          return this.$store.getters.gYukluKoyunlar.length
+        durumal () {
+          const sayi = this.$store.getters.gYukluFire
+          const durumumuz = sayi[0].updown
+          return durumumuz
         }
       }
     }

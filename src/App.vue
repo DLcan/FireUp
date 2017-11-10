@@ -1,6 +1,6 @@
 <template>
   <v-app id="example-1" toolbar footer dark>
-    <v-navigation-drawer
+<!--     <v-navigation-drawer
       temporary
       v-model="drawer"
       light
@@ -24,12 +24,12 @@
           </v-list-tile>
         </router-link>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
     <v-toolbar dark fixed>
       <v-toolbar-title>
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <router-link to="/" tag="span" style="cursor: pointer">
-          Koyunlar
+<!--         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+ -->        <router-link to="/" tag="span" style="cursor: pointer">
+          FireUp
         </router-link>
       </v-toolbar-title>
           
@@ -75,11 +75,11 @@
         drawer: false,
         fixed: false,
         items: [
-          { icon: 'home', title: 'AnaSayfa', link: '/' },
-          { icon: 'D', title: 'Dişiler', link: '/disiler' },
+          { icon: 'home', title: 'AnaSayfa', link: '/' }
+/*           { icon: 'D', title: 'Dişiler', link: '/disiler' },
           { icon: 'E', title: 'Erkekler', link: '/erkekler' },
           { icon: 'Y', title: 'Yeni Doğanlar', link: '/doganlar' },
-          { icon: 'K', title: 'Kesilenler', link: '/kesilenler' }
+          { icon: 'K', title: 'Kesilenler', link: '/kesilenler' } */
 /*           { icon: 'library_books', title: 'Son Durum', link: '/sondurum' },
           { icon: 'zoom_in', title: 'İncele', link: '/incele' },
           { icon: 'add_to_photos', title: 'Doğum', link: '/dogum' },
@@ -90,7 +90,7 @@
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'Koyunlar'
+        title: 'FireUp'
       }
     }
   }

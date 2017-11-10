@@ -5,15 +5,8 @@ import {
   Vuetify,
   VApp,
   VCard,
-  VDataTable,
-  VCheckbox,
-  VTextField,
-  VPagination,
-  VNavigationDrawer,
   VFooter,
   VList,
-  VBtn,
-  VIcon,
   VGrid,
   VToolbar,
   VTooltip,
@@ -31,15 +24,8 @@ Vue.use(Vuetify, {
   components: {
     VApp,
     VCard,
-    VDataTable,
-    VCheckbox,
-    VTextField,
-    VPagination,
-    VNavigationDrawer,
     VFooter,
     VList,
-    VBtn,
-    VIcon,
     VGrid,
     VToolbar,
     VTooltip,
@@ -59,16 +45,12 @@ new Vue({
   render: h => h(App),
   created () {
     firebase.initializeApp({
-      apiKey: 'AIzaSyBnaqYbq2rpILp3THSOFo0rg8P1tlCiFX8',
-      authDomain: 'koyun-48596.firebaseapp.com',
-      databaseURL: 'https://koyun-48596.firebaseio.com',
-      projectId: 'koyun-48596',
-      storageBucket: 'koyun-48596.appspot.com'
-
+      apiKey: 'AIzaSyAlxq8XJI51ks8dz7rCHi-OcnwyNqzIoOQ',
+      authDomain: 'updown-f85c5.firebaseapp.com',
+      databaseURL: 'https://updown-f85c5.firebaseio.com',
+      projectId: 'updown-f85c5',
+      storageBucket: 'updown-f85c5.appspot.com'
     })
-    this.$store.dispatch('Yukle')
-    this.$store.dispatch('YukleD')
-    this.$store.dispatch('YukleE')
-    this.$store.dispatch('YukleK')
+    this.$store.dispatch('YukleF')
   }
 })
